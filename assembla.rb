@@ -1,4 +1,6 @@
 require 'rubygems'
+require 'hirb'
+require 'hashie'
 require 'httparty'
 
 class Assembla
@@ -16,12 +18,17 @@ class Assembla
 
     basic_auth(login_name, password)
   end
+
   def self.spaces
     self.get('/spaces/my_spaces', xml_headers)
   end
 
   def self.space (space_name)
     @current_space = self.get("/spaces/#{space_name}", xml_headers)['space']
+  end
+
+  def self.my_report (report_id)
+    @my_report_id = report_id
   end
 
   def self.users
@@ -32,7 +39,23 @@ class Assembla
     self.get("/spaces/#{@current_space['id']}/tickets/report/9", xml_headers)
   end
 
+  def self.my_tickets
+    get("/spaces/#{@current_space['id']}/tickets/custom_report/#{@my_report_id}", xml_headers)
+  end
+
   def self.custom_reports
     get("/spaces/#{@current_space['id']}/custom_reports", xml_headers)
   end
+
+  def self.custom_report (report_id)
+    get("/spaces/#{@current_space['id']}/tickets/custom_report/#{report_id}", xml_headers)
+  end
+end
+
+require 'init'
+
+extend Hirb::Console
+
+def my_tickets
+  table Assembla.my_tickets['tickets'], :fields => ['number', 'priority', 'milestone_id', 'status_name', 'summary']
 end
