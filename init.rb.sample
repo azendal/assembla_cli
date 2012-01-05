@@ -1,0 +1,3 @@
+Assembla.login('user', 'pass');
+Assembla.space('spaceName');
+Assembla.my_report('personal report id');
