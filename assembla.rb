@@ -29,6 +29,10 @@ class Assembla
   end
   
   def self.tickets
-    self.get("/spaces/#{@current_space['id']}/tickets", xml_headers)
+    self.get("/spaces/#{@current_space['id']}/tickets/report/9", xml_headers)
+  end
+
+  def self.custom_reports
+    get("/spaces/#{@current_space['id']}/custom_reports", xml_headers)
   end
 end
