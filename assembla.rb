@@ -31,10 +31,18 @@ class Assembla
     @my_report_id = report_id
   end
 
+  def self.statuses
+    self.get("/spaces/#{@current_space['id']}/tickets/custom_statuses", xml_headers)
+  end
+
   def self.users
     self.get("/spaces/#{@current_space['id']}/users", xml_headers)
   end
-  
+ 
+  def self.milestones
+    get("/spaces/#{@current_space['id']}/milestones/", xml_headers)
+  end
+
   def self.tickets
     self.get("/spaces/#{@current_space['id']}/tickets/report/9", xml_headers)
   end
@@ -56,8 +64,12 @@ require 'init'
 
 extend Hirb::Console
 
-def my_tickets
+def tickets
   table Assembla.my_tickets['tickets'], :fields => ['number', 'priority', 'milestone_id', 'status_name', 'summary']
+end
+
+def milestones
+  table Assembla.milestones['milestones'], :fields => ['id', 'title']
 end
 
 def open (ticket_id)
