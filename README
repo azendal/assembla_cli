@@ -25,3 +25,6 @@ use cases
 
 > exit //well it exits :P
 
+
+bash line to start irb with assembla.rb required
+irb -r assembla
