@@ -59,3 +59,8 @@ extend Hirb::Console
 def my_tickets
   table Assembla.my_tickets['tickets'], :fields => ['number', 'priority', 'milestone_id', 'status_name', 'summary']
 end
+
+def open (ticket_id)
+  `open https://www.assembla.com/spaces/breezi/tickets/#{ticket_id}`
+  nil
+end
