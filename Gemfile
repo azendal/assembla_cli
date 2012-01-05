@@ -5,3 +5,4 @@ source "http://rubygems.org"
 gem 'hirb'
 gem 'hashie'
 gem 'httparty'
+gem 'isna'

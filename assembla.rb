@@ -2,12 +2,13 @@ require 'rubygems'
 require 'hirb'
 require 'hashie'
 require 'httparty'
+require 'isna'
 
 class Assembla
   include HTTParty
   format :xml
   base_uri 'assembla.com'
-  
+
   def self.xml_headers
    {:headers => {'Accept' => 'application/xml'}}
   end
@@ -38,7 +39,7 @@ class Assembla
   def self.users
     self.get("/spaces/#{@current_space['id']}/users", xml_headers)
   end
- 
+
   def self.milestones
     get("/spaces/#{@current_space['id']}/milestones/", xml_headers)
   end
@@ -58,14 +59,69 @@ class Assembla
   def self.custom_report (report_id)
     get("/spaces/#{@current_space['id']}/tickets/custom_report/#{report_id}", xml_headers)
   end
+
 end
 
 require 'init'
 
 extend Hirb::Console
 
+# Statuses dont change a log, so keep them cached to make ticket
+# listing faster.
+def status_translations
+  @status_translations ||= Assembla.statuses['ticket_statuses']
+end
+
+def milestone_translation
+  @milestone_translation ||= Assembla.milestones['milestones']
+end
+
+def clean_cache
+  @milestone_translation
+  @status_translations
+end
+
+# Translates a status-id into its status-name equivalent.
+def status_string number
+  status_translations.each do |hash|
+    if hash['list_order'] == number
+      return hash['name']
+    end
+  end
+  'Unknown'
+end
+
+# Translates a milestone-id into its milestone-name equivalent.
+def milestone_string number
+  milestone_translation.each do |hash|
+    if hash['id'] == number
+      return hash['title']
+    end
+  end
+  'Unknown'
+end
+
 def tickets
-  table Assembla.my_tickets['tickets'], :fields => ['number', 'priority', 'milestone_id', 'status_name', 'summary']
+  # Prepare table data.
+  headers = ['number', 'priority', 'milestone_id', 'status_name', 'summary']
+  hash    = Assembla.my_tickets['tickets']
+
+  # Replace status numbers for status strings
+  # TODO: we might need to send data so overriding is not cool.
+  # So maybe we should manage translations differently.
+  hash.each { |row| row['priority'] = status_string(row['priority']) }
+  hash.each { |row| row['milestone_id'] = milestone_string(row['milestone_id']) }
+
+  # Print data
+  table = Hirb::Helpers::AutoTable.render(hash, :fields => headers)
+  c = :green
+  table.each_line do |line|
+    c = c == :green ? :yellow : :green
+    puts line.chomp.to_ansi.send(c)
+  end
+  # TODO: Think on how this can be handled better.
+  # clean_cache
+  nil
 end
 
 def milestones
