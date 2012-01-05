@@ -40,7 +40,7 @@ class Assembla
   end
  
   def self.milestones
-    get("/spaces/#{@current_space['id']}/milestones/", xml_headers)
+    @statusses ||= get("/spaces/#{@current_space['id']}/milestones/", xml_headers)
   end
 
   def self.tickets
