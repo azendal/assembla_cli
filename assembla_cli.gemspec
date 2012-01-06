@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "assembla_cli"
   s.version     = AssemblaCli::VERSION
   s.authors     = ["azendal", "ktlacaelel", "edgarjs"]
-  s.email       = ["azendal@gmail.com", "ktlacaelel@gmail.com", "edgar.js@gmail.com"]
+  s.email       = ["trasvina@gmail.com", "ktlacaelel@gmail.com", "edgar.js@gmail.com"]
   s.homepage    = "https://github.com/azendal/assembla_cli/"
   s.summary     = %q{A CLI to use Assembla for easy usage}
   s.description = %q{A CLI to use Assembla for easy usage}
