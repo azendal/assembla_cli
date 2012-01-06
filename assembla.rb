@@ -81,6 +81,10 @@ def clean_cache
   @status_translations
 end
 
+def priority_string number
+  ['', 'Highest (1)', 'High (2)', 'Normal (3)', 'Low (4)', 'Lowest (5)'][number]
+end
+
 # Translates a status-id into its status-name equivalent.
 def status_string number
   status_translations.each do |hash|
@@ -109,7 +113,7 @@ def tickets
   # Replace status numbers for status strings
   # TODO: we might need to send data so overriding is not cool.
   # So maybe we should manage translations differently.
-  hash.each { |row| row['priority'] = status_string(row['priority']) }
+  hash.each { |row| row['priority'] = priority_string(row['priority']) }
   hash.each { |row| row['milestone_id'] = milestone_string(row['milestone_id']) }
 
   # Print data
