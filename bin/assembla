@@ -102,8 +102,12 @@ def milestones
 end
 
 def open (ticket_id)
-  `open https://www.assembla.com/spaces/breezi/tickets/#{ticket_id}`
+  `open https://www.assembla.com/spaces/#{Assembla.instance_variable_get('@current_space')['name']}/tickets/#{ticket_id}`
   nil
+end
+
+def ticket (id)
+  Assembla.ticket
 end
 
 # TODO: Fix this
