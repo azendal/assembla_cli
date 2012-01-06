@@ -1,1 +1,7 @@
 init.rb
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
+.rvmrc
+

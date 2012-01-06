@@ -1,8 +1,3 @@
-# A sample Gemfile
 source "http://rubygems.org"
-
-# gem "rails"
-gem 'hirb'
-gem 'hashie'
-gem 'httparty'
-gem 'isna'
+# Specify your gem's dependencies in assembla_cli.gemspec
+gemspec
