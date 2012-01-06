@@ -27,9 +27,9 @@ def clean_cache
   @status_translations
 end
 
-def priority_string number                                                                                                         
-  ['', 'Highest (1)', 'High (2)', 'Normal (3)', 'Low (4)', 'Lowest (5)'][number]                                                   
-end 
+def priority_string number
+  ['', 'Highest (1)', 'High (2)', 'Normal (3)', 'Low (4)', 'Lowest (5)'][number]
+end
 
 # Translates a status-id into its status-name equivalent.
 def status_string number
@@ -87,10 +87,10 @@ def print_tickets hash
 
   # Print data
   table = Hirb::Helpers::AutoTable.render(hash, :fields => headers)
-  c = :green
+  c = :green_background
   table.each_line do |line|
-    c = c == :green ? :yellow : :green
-    puts line.chomp.to_ansi.send(c)
+    c = c == :green_background ? :yellow_background : :green_background
+    puts line.chomp.to_ansi.black.send(c)
   end
   # TODO: Think on how this can be handled better.
   # clean_cache
