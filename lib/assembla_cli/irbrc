@@ -1,0 +1,16 @@
+require 'irb/completion'
+
+prompt = "assembla> "
+
+IRB.conf[:PROMPT][:ASSEMBLA] = {
+  :AUTO_INDENT => false,
+  :PROMPT_I    => prompt,
+  :PROMPT_N    => prompt,
+  :PROMPT_S    => prompt,
+  :PROMPT_C    => prompt,
+  :RETURN      => ""
+}
+IRB.conf[:PROMPT_MODE] = :ASSEMBLA
+IRB.conf[:SINGLE_IRB] = true
+IRB.conf[:IRB_NAME] = "assembla cli"
+

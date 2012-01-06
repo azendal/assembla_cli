@@ -101,7 +101,7 @@ def milestones
   table Assembla.milestones['milestones'], :fields => ['id', 'title']
 end
 
-def open (ticket_id)
+def http (ticket_id)
   `open https://www.assembla.com/spaces/#{Assembla.instance_variable_get('@current_space')['name']}/tickets/#{ticket_id}`
   nil
 end
@@ -110,13 +110,26 @@ def ticket (id)
   Assembla.ticket
 end
 
-# TODO: Fix this
-print "assembla Space?> "
-cmd = gets.chomp
-Assembla.space(cmd)
-while cmd != 'exit' do
-  print "assembla> "
-  cmd = gets.chomp
-  send(cmd)
+def change_space(space_name)
+  Assembla.space space_name
+  prompt = "assembla(#{space_name})> "
+  conf.prompt_i = conf.prompt_n = conf.prompt_s = conf.prompt_c = prompt
 end
+
+# TODO: remove warn message about aliasing irb_help
+def help
+  # TODO: Complete help
+  puts <<-eos
+
+    Assembla CLI, version #{AssemblaCli::VERSION}
+
+    change_space # Changes current space
+    tickets      # Lists tickets for current space
+    help         # Show this message
+
+  eos
+end
+
+ENV['IRBRC'] = File.expand_path('../../lib/assembla_cli/irbrc', __FILE__)
+IRB.start
 

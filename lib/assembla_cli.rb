@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'irb'
 require 'hirb'
 require 'hashie'
 require 'httparty'
@@ -9,6 +10,10 @@ module Assembla
   include HTTParty
   format :xml
   base_uri 'assembla.com'
+
+  def self.current_space
+    @current_space
+  end
 
   def self.xml_headers
    {:headers => {'Accept' => 'application/xml'}}
