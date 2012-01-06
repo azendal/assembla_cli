@@ -30,6 +30,11 @@
     gem build assembla_cli.gemspec
     gem i assembla_cli-0.0.1.gem
 
+**NOTE**: For now you need to manually create a `~/.assembla_cli` file with your username and password separated with line break, like:
+
+    username
+    password
+
 # Use
 
     $ assembla
