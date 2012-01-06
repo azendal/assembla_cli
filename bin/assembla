@@ -10,6 +10,8 @@ Assembla.login(username, password)
 # Assembla.space('space name')
 # Assembla.my_report('personal report id')
 
+
+
 extend Hirb::Console
 
 # Statuses dont change a log, so keep them cached to make ticket
@@ -123,9 +125,11 @@ def help
 
     Assembla CLI, version #{AssemblaCli::VERSION}
 
-    change_space # Changes current space
-    tickets      # Lists tickets for current space
-    help         # Show this message
+    change_space  # Changes current space
+    change_report # Changes current default report
+    tickets       # Lists tickets for current space
+    my_tickets    # Lists tickets for report
+    help          # Show this message
 
   eos
 end
