@@ -51,11 +51,34 @@ def milestone_string number
   'Unknown'
 end
 
+def reports
+  all_reports = Assembla.custom_reports['custom_reports']
+  table all_reports['user_reports'] + all_reports['team_reports'], :fields => ['id', 'name']
+end
+
+def change_report
+  reports
+  print "select report number>"
+  id = gets.chomp
+  Assembla.my_report id
+end
+
+def my_tickets
+  if Assembla.my_report_id.nil?
+    change_report
+  end
+  hash = Assembla.my_tickets['tickets']
+  print_tickets hash
+end
+
 def tickets
+  hash = Assembla.tickets['tickets']
+  print_tickets hash
+end
+
+def print_tickets hash
   # Prepare table data.
   headers = ['number', 'priority', 'milestone_id', 'status_name', 'summary']
-  hash    = Assembla.my_tickets['tickets']
-
   # Replace status numbers for status strings
   # TODO: we might need to send data so overriding is not cool.
   # So maybe we should manage translations differently.

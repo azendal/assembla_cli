@@ -32,6 +32,10 @@ module Assembla
   def self.my_report (report_id)
     @my_report_id = report_id
   end
+  
+  def self.my_report_id
+    @my_report_id || nil
+  end
 
   def self.statuses
     self.get("/spaces/#{@current_space['id']}/tickets/custom_statuses", xml_headers)
