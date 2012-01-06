@@ -48,6 +48,14 @@ module Assembla
   def self.milestones
     @statusses ||= get("/spaces/#{@current_space['id']}/milestones/", xml_headers)
   end
+  
+  def self.ticket= (id)
+    @current_ticket = get("/spaces/#{@current_space['id']}/tickets/#{id}")['ticket']
+  end
+
+  def self.ticket
+    @current_ticket
+  end
 
   def self.tickets
     self.get("/spaces/#{@current_space['id']}/tickets/report/9", xml_headers)
