@@ -11,10 +11,6 @@ module Assembla
   format :xml
   base_uri 'assembla.com'
 
-  def self.current_space
-    @current_space
-  end
-
   def self.xml_headers
    {:headers => {'Accept' => 'application/xml'}}
   end
@@ -27,54 +23,55 @@ module Assembla
   end
 
   def self.spaces
-    self.get('/spaces/my_spaces', xml_headers)
+    get('/spaces/my_spaces', xml_headers)
   end
 
-  def self.space (space_name)
-    @current_space = self.get("/spaces/#{space_name}", xml_headers)['space']
+  def self.space (space_name = nil)
+    if space_name
+        @current_space = get("/spaces/#{space_name}", xml_headers)
+    end
+    @current_space
   end
 
-  def self.my_report (report_id)
-    @my_report_id = report_id
-  end
-  
-  def self.my_report_id
-    @my_report_id || nil
+  def self.my_report_id (report_id = nil)
+    if report_id
+        @my_report_id = report_id
+    end
+    @my_report_id
   end
 
   def self.statuses
-    self.get("/spaces/#{@current_space['id']}/tickets/custom_statuses", xml_headers)
+    @statuses ||= get("/spaces/#{space['space']['id']}/tickets/custom_statuses", xml_headers)
   end
 
   def self.users
-    self.get("/spaces/#{@current_space['id']}/users", xml_headers)
+    @users ||= get("/spaces/#{space['space']['id']}/users", xml_headers)
   end
 
   def self.milestones
-    @statusses ||= get("/spaces/#{@current_space['id']}/milestones/", xml_headers)
+    @milestones ||= get("/spaces/#{space['space']['id']}/milestones/", xml_headers)
   end
   
-  def self.ticket= (id)
-    @current_ticket = get("/spaces/#{@current_space['id']}/tickets/#{id}")['ticket']
-  end
-
-  def self.ticket
+  def self.ticket (ticket_id = nil)
+    if ticket_id
+        @current_ticket = get("/spaces/#{space['space']['id']}/tickets/#{ticket_id}", xml_headers)
+    end
     @current_ticket
   end
 
   def self.tickets
-    self.get("/spaces/#{@current_space['id']}/tickets/report/9", xml_headers)
+    get("/spaces/#{space['space']['id']}/tickets/report/9", xml_headers)
   end
 
   def self.my_tickets
-    get("/spaces/#{@current_space['id']}/tickets/custom_report/#{@my_report_id}", xml_headers)
+    get("/spaces/#{space['space']['id']}/tickets/custom_report/#{my_report_id}", xml_headers)
   end
 
   def self.custom_reports
-    get("/spaces/#{@current_space['id']}/custom_reports", xml_headers)
+    get("/spaces/#{space['space']['id']}/custom_reports", xml_headers)
   end
 
   def self.custom_report (report_id)
-    get("/spaces/#{@current_space['id']}/tickets/custom_report/#{report_id}", xml_headers)
+    get("/spaces/#{space['space']['id']}/tickets/custom_report/#{report_id}", xml_headers)
   end
 end

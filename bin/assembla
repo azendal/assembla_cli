@@ -3,6 +3,8 @@
 $:.unshift File.expand_path("../../lib", __FILE__)
 require 'assembla_cli'
 
+extend Hirb::Console
+
 # TODO: Prompt for credentials and create this file if not exists
 # TODO: Move authentication to another class or module
 username, password = File.read("#{ENV['HOME']}/.assembla_cli").split
@@ -10,9 +12,6 @@ Assembla.login(username, password)
 # Assembla.space('space name')
 # Assembla.my_report('personal report id')
 
-
-
-extend Hirb::Console
 
 # Statuses dont change a log, so keep them cached to make ticket
 # listing faster.
@@ -62,7 +61,7 @@ def change_report
   reports
   print "select report number>"
   id = gets.chomp
-  Assembla.my_report id
+  Assembla.my_report_id id
 end
 
 def my_tickets
