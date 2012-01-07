@@ -54,7 +54,7 @@ module Assembla
   
   def self.ticket (ticket_id = nil)
     if ticket_id
-        @current_ticket = get("/spaces/#{space['space']['id']}/tickets/#{ticket_id}", xml_headers)
+      @current_ticket = get("/spaces/#{space['space']['id']}/tickets/#{ticket_id}", xml_headers)
     end
     @current_ticket
   end

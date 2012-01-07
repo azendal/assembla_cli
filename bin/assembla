@@ -107,8 +107,12 @@ def http (ticket_id)
   nil
 end
 
-def ticket (id)
-  Assembla.ticket
+def ticket (id = nil)
+  if id
+    Assembla.ticket id
+  else
+    puts Assembla.ticket['ticket']
+  end
 end
 
 def change_space(space_name)
