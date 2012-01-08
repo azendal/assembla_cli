@@ -92,22 +92,22 @@ def print_tickets hash
   # Prepare table data.
   headers = {
     'number' => 'NUMBER', 
-    'priority' => 'PRIORITY', 
-    'milestone_id' => 'MILESTONE', 
+    'priority_name' => 'PRIORITY', 
+    'milestone_name' => 'MILESTONE', 
     'status_name' => 'STATUS', 
     'summary' => 'SUMMARY'
   }
-  fields = ['number', 'priority', 'milestone_id', 'status_name', 'summary']
-  # Replace status numbers for status strings
-  # TODO: we might need to send data so overriding is not cool.
-  # So maybe we should manage translations differently.
-  hash.each { |row| row['priority'] = priority_string(row['priority']) }
-  hash.each { |row| row['milestone_id'] = milestone_string(row['milestone_id']) }
+
+  fields = ['number', 'priority_name', 'milestone_name', 'status_name', 'summary']
+  
+  hash.each { |row| row['priority_name'] = priority_string(row['priority']) }
+  hash.each { |row| row['milestone_name'] = milestone_string(row['milestone_id']) }
 
   # Print data
   table = Hirb::Helpers::AutoTable.render(hash, :fields => fields, :headers => headers)
   c = @cfg['zebra_colors']['color1']
   i = 0;
+  
   table.each_line do |line|
     if i > 2
       c = c == @cfg['zebra_colors']['color1'] ? @cfg['zebra_colors']['color2'] : @cfg['zebra_colors']['color1']
@@ -115,8 +115,7 @@ def print_tickets hash
     puts line.chomp.to_ansi.white.send(c)
     i = i + 1
   end
-  # TODO: Think on how this can be handled better.
-  # clean_cache
+
   nil
 end
 
@@ -143,8 +142,7 @@ def change_space(space_name)
   conf.prompt_i = conf.prompt_n = conf.prompt_s = conf.prompt_c = prompt
 end
 
-# TODO: remove warn message about aliasing irb_help
-def help
+def commands
   # TODO: Complete help
   puts <<-eos
 
@@ -154,9 +152,13 @@ def help
     change_report # Changes current default report
     tickets       # Lists tickets for current space
     my_tickets    # Lists tickets for report
-    help          # Show this message
+    commands, h   # Show this message
 
   eos
+end
+
+def h
+  commands
 end
 
 ENV['IRBRC'] = File.expand_path('../../lib/assembla_cli/irbrc', __FILE__)
