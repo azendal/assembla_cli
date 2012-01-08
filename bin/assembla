@@ -9,16 +9,20 @@ extend Hirb::Console
 # TODO: Move authentication to another class or module
 username, password = File.read("#{ENV['HOME']}/.assembla_cli").split
 
-cfg = {
+@cfg = {
   'username' => username,
-  'password' => password
+  'password' => password,
+  "zebra_colors" => {
+    "color1" => "black_background",
+    "color2" => "blue_background"
+  }
 }
 
-cfg = cfg.merge MultiJson.decode(File.read(Dir.pwd + '/.asemblarc')) if File.exists?(Dir.pwd + '/.asemblarc')
+@cfg = @cfg.merge MultiJson.decode(File.read(Dir.pwd + '/.assemblarc')) if File.exists?(Dir.pwd + '/.assemblarc')
 
-Assembla.login(cfg['username'], cfg['password']) if cfg['username'] && cfg['password']
-Assembla.space(cfg['space']) if cfg['space']
-Assembla.my_report_id(cfg['report_id']) if cfg['report_id']
+Assembla.login(@cfg['username'], @cfg['password']) if @cfg['username'] && @cfg['password']
+Assembla.space(@cfg['space']) if @cfg['space']
+Assembla.my_report_id(@cfg['report_id']) if @cfg['report_id']
 
 # Statuses dont change a log, so keep them cached to make ticket
 # listing faster.
@@ -86,7 +90,14 @@ end
 
 def print_tickets hash
   # Prepare table data.
-  headers = ['number', 'priority', 'milestone_id', 'status_name', 'summary']
+  headers = {
+    'number' => 'NUMBER', 
+    'priority' => 'PRIORITY', 
+    'milestone_id' => 'MILESTONE', 
+    'status_name' => 'STATUS', 
+    'summary' => 'SUMMARY'
+  }
+  fields = ['number', 'priority', 'milestone_id', 'status_name', 'summary']
   # Replace status numbers for status strings
   # TODO: we might need to send data so overriding is not cool.
   # So maybe we should manage translations differently.
@@ -94,11 +105,15 @@ def print_tickets hash
   hash.each { |row| row['milestone_id'] = milestone_string(row['milestone_id']) }
 
   # Print data
-  table = Hirb::Helpers::AutoTable.render(hash, :fields => headers)
-  c = :green_background
+  table = Hirb::Helpers::AutoTable.render(hash, :fields => fields, :headers => headers)
+  c = @cfg['zebra_colors']['color1']
+  i = 0;
   table.each_line do |line|
-    c = c == :green_background ? :yellow_background : :green_background
-    puts line.chomp.to_ansi.black.send(c)
+    if i > 2
+      c = c == @cfg['zebra_colors']['color1'] ? @cfg['zebra_colors']['color2'] : @cfg['zebra_colors']['color1']
+    end
+    puts line.chomp.to_ansi.white.send(c)
+    i = i + 1
   end
   # TODO: Think on how this can be handled better.
   # clean_cache

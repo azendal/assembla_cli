@@ -3,4 +3,8 @@
   "password"  : "",
   "space"     : "",
   "report_id" : ""
+  "zebra_colors" : {
+    "color1" : "black_background",
+    "color2" : "blue_background"
+  }
 }
