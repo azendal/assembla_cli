@@ -8,10 +8,17 @@ extend Hirb::Console
 # TODO: Prompt for credentials and create this file if not exists
 # TODO: Move authentication to another class or module
 username, password = File.read("#{ENV['HOME']}/.assembla_cli").split
-Assembla.login(username, password)
-# Assembla.space('space name')
-# Assembla.my_report('personal report id')
 
+cfg = {
+  'username' => username,
+  'password' => password
+}
+
+cfg = cfg.merge MultiJson.decode(File.read(Dir.pwd + '/.asemblarc')) if File.exists?(Dir.pwd + '/.asemblarc')
+
+Assembla.login(cfg['username'], cfg['password']) if cfg['username'] && cfg['password']
+Assembla.space(cfg['space']) if cfg['space']
+Assembla.my_report_id(cfg['report_id']) if cfg['report_id']
 
 # Statuses dont change a log, so keep them cached to make ticket
 # listing faster.
