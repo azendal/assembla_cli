@@ -91,11 +91,11 @@ end
 def print_tickets hash
   # Prepare table data.
   headers = {
-    'number' => 'NUMBER', 
-    'priority_name' => 'PRIORITY', 
+    'number'         => 'NUMBER', 
+    'priority_name'  => 'PRIORITY', 
     'milestone_name' => 'MILESTONE', 
-    'status_name' => 'STATUS', 
-    'summary' => 'SUMMARY'
+    'status_name'    => 'STATUS', 
+    'summary'        => 'SUMMARY'
   }
 
   fields = ['number', 'priority_name', 'milestone_name', 'status_name', 'summary']
@@ -124,14 +124,14 @@ def milestones
 end
 
 def http (ticket_id)
-  `open https://www.assembla.com/spaces/#{Assembla.instance_variable_get('@current_space')['name']}/tickets/#{ticket_id}`
+  `open https://www.assembla.com/spaces/#{Assembla.space['space']['name']}/tickets/#{ticket_id}`
   nil
 end
 
 def ticket (id = nil)
   if id
     Assembla.ticket id
-  else
+  elsif Assembla.ticket
     puts Assembla.ticket['ticket']
   end
 end
