@@ -64,6 +64,19 @@
 
     assembla(Space)> ticket 1
 
+## Full configured use
+
+    $ assembla
+    assembla(Space)> my_tickets
+    +--------+-------------+------------+-------------------+----------------------------------------+
+    | NUMBER | PRIORITY    | MILESTONE  | STATUS            | SUMMARY                                |
+    +--------+-------------+------------+-------------------+----------------------------------------+
+    | 5      | Highest (1) | Release    | Working           | Add some feature                       |
+    | 1      | Normal (3)  | Release    | New               | Improve some other feature             |
+    | 2      | Normal (3)  | Release    | New               | Remove unused method x                 |
+    | 7      | High (2)    | Refactor   | New               | Abstract method x into a factory       |
+    +--------+-------------+------------+-------------------+----------------------------------------+
+
 ## Getting help
 
     assembla> commands
