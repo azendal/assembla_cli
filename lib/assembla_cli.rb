@@ -28,7 +28,7 @@ module Assembla
 
   def self.space (space_name = nil)
     if space_name
-        @current_space = get("/spaces/#{space_name}", xml_headers)
+        @current_space = get("/spaces/#{space_name.gsub(/ /, '-').downcase}", xml_headers)
     end
     @current_space
   end

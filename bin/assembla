@@ -70,7 +70,7 @@ end
 
 def change_report
   reports
-  print "select report number>"
+  print "select report number> "
   id = gets.chomp
   Assembla.my_report_id id
 end
@@ -136,10 +136,19 @@ def ticket (id = nil)
   end
 end
 
-def change_space(space_name)
+def change_space(space_name = nil)
+  unless space_name
+    spaces
+    print "enter space name> "
+    space_name = gets.chomp
+  end
   Assembla.space space_name
   prompt = "assembla(#{space_name})> "
   conf.prompt_i = conf.prompt_n = conf.prompt_s = conf.prompt_c = prompt
+end
+
+def spaces
+  table Assembla.spaces['spaces'].map { |s| {:name => s['name'], :slug => s['wiki_name']} }
 end
 
 def commands
