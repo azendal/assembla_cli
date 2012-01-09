@@ -3,46 +3,63 @@
      (   |\__ \\__ \  __/ |   |   | |   | | (   |   (    | |
     \__,_|____/____/\___|_|  _|  _|_.__/ _|\__,_|  \___|_|_|                                                        
 
-## use cases
+## Installation
 
-    > assembla
+    gem install assembla_cli
 
-    > tickets //returns a table with my tickets
+## Alternative Installation
 
-    #number priority status title
-    123     high     new    just another bug
-    321     low      test   an easy fix
-
-    > select(123) //sets ticket 123 as the current ticket
-    > open(123) //opens the ticket 123 in the browser for analysis
-
-    > status //lists the possible statusses for the ticket
-    #  label
-    0  invalid
-    1  new
-    2  test
-    3  fixed
-
-    > status 2 //sets the current ticket to test
-    > ticket //shows the current ticket summary
-    > comment "some comment or reason i already fixed this before ...."
-
-    > exit //well it exits :P
-
-## Install
-
+    git clone git@github.com:azendal/assembla_cli.git
+    cd assembla_cli
     bundle
     gem build assembla_cli.gemspec
     gem i assembla_cli-0.0.1.gem
 
-**NOTE**: For now you need to manually create a `~/.assembla_cli` file with your username and password separated with line break, like:
+## Configuration
 
-    username
-    password
+    echo -e "<username>\n<password>" >> ~/.assembla_cli
 
-# Use
+## Project configuration
+    
+    cd /path/to/project
+    touch .assemblarc
 
-    $ assembla
-    $ assempla Space?> space-name
-    $ assembla> milestones
-    $ assembla> exit
+    #sample configuration
+    {
+      "space"     : "space",
+      "report_id" : "12341",
+      "zebra_colors" : {
+        "color1" : "black_background",
+        "color2" : "blue_background"
+      }
+    }
+
+## Use
+
+    assembla
+    assembla> change_space 'Space'
+    
+    assembla(Space)> change_report
+    +--------+-------------------------------+
+    | id     | name                          |
+    +--------+-------------------------------+
+    | 12     | By Person - Open              |
+    | 32     | My Open tickets               |
+    +--------+-------------------------------+
+    select report number> 32
+
+    assembla(Space)> my_tickets
+    +--------+-------------+------------+-------------------+----------------------------------------+
+    | NUMBER | PRIORITY    | MILESTONE  | STATUS            | SUMMARY                                |
+    +--------+-------------+------------+-------------------+----------------------------------------+
+    | 5      | Highest (1) | Release    | Working           | Add some feature                       |
+    | 1      | Normal (3)  | Release    | New               | Improve some other feature             |
+    | 2      | Normal (3)  | Release    | New               | Remove unused method x                 |
+    | 7      | High (2)    | Refactor   | New               | Abstract method x into a factory       |
+    +--------+-------------+------------+-------------------+----------------------------------------+
+    
+    assembla(Space)> ticket 5
+    assembla(Space)> comment "will be fixed soon"
+    assembla(Space)> status 'test'
+
+    assembla(Space)> ticket 1
