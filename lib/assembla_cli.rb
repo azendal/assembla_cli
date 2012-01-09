@@ -11,6 +11,10 @@ module Assembla
   format :xml
   base_uri 'assembla.com'
 
+  def self.reset!
+    @current_space = @milestones = @my_report_id = @statuses, @users = nil
+  end
+
   def self.xml_headers
    {:headers => {'Accept' => 'application/xml'}}
   end
@@ -60,7 +64,7 @@ module Assembla
   end
 
   def self.tickets
-    get("/spaces/#{space['space']['id']}/tickets/report/9", xml_headers)
+    get("/spaces/#{space['space']['id']}/tickets/report/3", xml_headers)
   end
 
   def self.my_tickets

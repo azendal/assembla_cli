@@ -31,7 +31,7 @@ def status_translations
 end
 
 def milestone_translation
-  @milestone_translation ||= Assembla.milestones['milestones']
+  @milestone_translation ||= Assembla.milestones['milestones'] || []
 end
 
 def clean_cache
@@ -91,17 +91,19 @@ end
 def print_tickets hash
   # Prepare table data.
   headers = {
-    'number'         => 'NUMBER', 
-    'priority_name'  => 'PRIORITY', 
-    'milestone_name' => 'MILESTONE', 
-    'status_name'    => 'STATUS', 
-    'summary'        => 'SUMMARY'
+    'number'           => 'NUMBER',
+    'priority_name'    => 'PRIORITY',
+    'milestone_name'   => 'MILESTONE',
+    'status_name'      => 'STATUS',
+    'assigned_to_name' => 'ASSIGNED TO',
+    'summary'          => 'SUMMARY'
   }
 
-  fields = ['number', 'priority_name', 'milestone_name', 'status_name', 'summary']
+  fields = ['number', 'priority_name', 'milestone_name', 'status_name', 'assigned_to_name', 'summary']
   
   hash.each { |row| row['priority_name'] = priority_string(row['priority']) }
   hash.each { |row| row['milestone_name'] = milestone_string(row['milestone_id']) }
+  hash.each { |row| row['assigned_to_name'] = row['assigned_to'] ? row['assigned_to']['name'] : '' }
 
   # Print data
   table = Hirb::Helpers::AutoTable.render(hash, :fields => fields, :headers => headers)
@@ -142,6 +144,7 @@ def change_space(space_name = nil)
     print "enter space name> "
     space_name = gets.chomp
   end
+  Assembla.reset!
   Assembla.space space_name
   prompt = "assembla(#{space_name})> "
   conf.prompt_i = conf.prompt_n = conf.prompt_s = conf.prompt_c = prompt
