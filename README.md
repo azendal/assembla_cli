@@ -63,3 +63,8 @@
     assembla(Space)> status 'test'
 
     assembla(Space)> ticket 1
+
+## Getting help
+
+    assembla> commands
+    assembla> h
