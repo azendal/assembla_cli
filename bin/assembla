@@ -92,6 +92,23 @@ def tickets
   print_tickets hash
 end
 
+def print_table hash, fields = [], headers = {}
+  # Print data
+  table = Hirb::Helpers::AutoTable.render(hash, :fields => fields, :headers => headers)
+  c = @cfg['zebra_colors']['color1']
+  i = 0;
+  
+  table.each_line do |line|
+    if i > 2
+      c = c == @cfg['zebra_colors']['color1'] ? @cfg['zebra_colors']['color2'] : @cfg['zebra_colors']['color1']
+    end
+    puts line.chomp.to_ansi.white.send(c)
+    i = i + 1
+  end
+
+  nil
+end
+
 def print_tickets hash
   # Prepare table data.
   headers = {
@@ -109,20 +126,7 @@ def print_tickets hash
   hash.each { |row| row['milestone_name'] = milestone_string(row['milestone_id']) }
   hash.each { |row| row['assigned_to_name'] = row['assigned_to'] ? row['assigned_to']['name'] : '' }
 
-  # Print data
-  table = Hirb::Helpers::AutoTable.render(hash, :fields => fields, :headers => headers)
-  c = @cfg['zebra_colors']['color1']
-  i = 0;
-  
-  table.each_line do |line|
-    if i > 2
-      c = c == @cfg['zebra_colors']['color1'] ? @cfg['zebra_colors']['color2'] : @cfg['zebra_colors']['color1']
-    end
-    puts line.chomp.to_ansi.white.send(c)
-    i = i + 1
-  end
-
-  nil
+  print_table hash, fields, headers
 end
 
 def milestones
@@ -155,7 +159,10 @@ def change_space(space_name = nil)
 end
 
 def spaces
-  table Assembla.spaces['spaces'].map { |s| {:name => s['name'], :slug => s['wiki_name']} }
+  hash = Assembla.spaces['spaces']
+  fields = ['name', 'wiki_name']
+  headers = { 'name' => 'NAME', 'wiki_name' => 'SLUG' }
+  print_table hash, fields, headers
 end
 
 def commands
