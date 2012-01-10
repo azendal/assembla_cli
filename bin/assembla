@@ -75,12 +75,16 @@ def change_report
   Assembla.my_report_id id
 end
 
-def my_tickets
+def my_report
   if Assembla.my_report_id.nil?
     change_report
   end
-  hash = Assembla.my_tickets['tickets']
+  hash = Assembla.custom_report(Assembla.my_report_id)['tickets']
   print_tickets hash
+end
+
+def my_tickets
+  print_tickets Assembla.my_tickets['tickets']
 end
 
 def tickets
@@ -163,7 +167,8 @@ def commands
     change_space  # Changes current space
     change_report # Changes current default report
     tickets       # Lists tickets for current space
-    my_tickets    # Lists tickets for report
+    my_tickets    # Lists active tickets assigned to 'me'
+    my_report     # Lists custom report's tickets
     commands, h   # Show this message
 
   eos

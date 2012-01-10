@@ -68,7 +68,7 @@ module Assembla
   end
 
   def self.my_tickets
-    get("/spaces/#{space['space']['id']}/tickets/custom_report/#{my_report_id}", xml_headers)
+    get("/spaces/#{space['space']['id']}/tickets/report/8", xml_headers)
   end
 
   def self.custom_reports
