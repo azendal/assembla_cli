@@ -94,7 +94,7 @@ end
 
 def print_table hash, fields = [], headers = {}
   # Print data
-  table = Hirb::Helpers::AutoTable.render(hash, :fields => fields, :headers => headers)
+  table = Hirb::Helpers::AutoTable.render(hash, :fields => fields, :headers => headers, :description => false)
   c = @cfg['zebra_colors']['color1']
   i = 0;
   
@@ -147,7 +147,22 @@ def ticket (id = nil)
     Assembla.ticket id
     print_ticket
   elsif Assembla.ticket
-    print_ticket
+    t = Assembla.ticket['ticket']
+   # td = [{
+   #   'number' => t['number'],
+   #   'summary' => t['summary']
+   # }]
+   # table(td, :description => false)
+    
+    print_tickets [Assembla.ticket['ticket']]
+
+    puts '-' * Hirb::View.width
+    cd = t['ticket_comments'].map do |c|
+      next unless c['comment']
+      puts "#{c['user']['name']}:"
+      puts c['comment']
+      puts '-' * Hirb::View.width
+    end
   else
     puts 'Please select a ticket to display'
   end
