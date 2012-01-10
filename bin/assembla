@@ -130,34 +130,7 @@ def print_tickets hash
 end
 
 def print_ticket
-  ticket = Assembla.ticket['ticket']
-  hash = []
-  hash[0] = {:col1 => 'id', :col2 => ticket['number'], :col3 => ''}
-  hash[1] = {:col1 => 'summary', :col2 => ticket['summary'], :col3 => ''}
-  hash[2] = {:col1 => 'description', :col2 => ticket['description'], :col3 => ''}
-  hash[3] = {:col1 => 'milestone', :col2 => milestone_string(ticket['milestone_id']), :col3 => ''}
-  hash[4] = {:col1 => 'assigned to', :col2 => ticket['assigned_to']['name'], :col3 => ''}
-  hash[5] = {:col1 => 'reported by', :col2 => ticket['reporter']['name'], :col3 => ''}
-  hash[6] = {:col1 => 'status', :col2 => ticket['status_name'], :col3 => ''}
-  hash[7] = {:col1 => 'Comment and Changes', :col2 => ''}
-
-  ticket['ticket_comments'].each do |comments|
-    if comments['comment'].nil?
-      hash << {:col1 => 'ticket changed', :col2 => comments['ticket_changes'], :col3 => comments['updated_at']}
-    else
-      hash << {:col1 => 'comment', :col2 => comments['comment'], :col3 => comments['updated_at']}
-    end
-  end
-  table = Hirb::Helpers::AutoTable.render(hash, :headers => false)
-  c = @cfg['zebra_colors']['color1']
-  i = 0;
-  
-  table.each_line do |line|
-    c = (i == 8 || i == 1) ? @cfg['zebra_colors']['color2'] : @cfg['zebra_colors']['color1']
-    puts line.chomp.to_ansi.white.send(c)
-    i = i + 1
-  end
-
+  puts Assembla.ticket['ticket']
 end
 
 def milestones
