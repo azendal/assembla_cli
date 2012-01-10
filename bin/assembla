@@ -129,6 +129,10 @@ def print_tickets hash
   print_table hash, fields, headers
 end
 
+def print_ticket
+  puts Assembla.ticket['ticket']
+end
+
 def milestones
   table Assembla.milestones['milestones'], :fields => ['id', 'title']
 end
@@ -141,6 +145,7 @@ end
 def ticket (id = nil)
   if id
     Assembla.ticket id
+    print_ticket
   elsif Assembla.ticket
     t = Assembla.ticket['ticket']
    # td = [{
@@ -158,7 +163,51 @@ def ticket (id = nil)
       puts c['comment']
       puts '-' * Hirb::View.width
     end
+  else
+    puts 'Please select a ticket to display'
   end
+end
+
+def comment (comment, id = nil)
+  if id.nil? && Assembla.ticket.nil?
+    puts 'Please select a ticket to comment'
+  elsif id
+    Assembla.ticket id
+    Assembla.add_comment(comment)
+    print_ticket
+  else
+    Assembla.add_comment(comment)
+    print_ticket
+  end 
+end
+
+def update_status (status, id = nil)
+  if id.nil? && Assembla.ticket.nil?
+    puts 'Please select a ticket to comment'
+  elsif id
+    Assembla.ticket id
+    Assembla.change_status(status)
+    print_ticket
+  else
+    Assembla.change_status(status)
+    print_ticket
+  end 
+end
+
+def fixed (id = nil)
+  update_status('Fixed', id)
+end
+
+def test (id = nil)
+  update_status('Test', id)
+end
+
+def invalid (id = nil)
+  update_status('Invalid', id)
+end
+
+def statuses
+  table Assembla.statuses['ticket_statuses'], :fields => ['name']
 end
 
 def change_space(space_name = nil)
@@ -186,12 +235,23 @@ def commands
 
     Assembla CLI, version #{AssemblaCli::VERSION}
 
-    change_space  # Changes current space
-    change_report # Changes current default report
-    tickets       # Lists tickets for current space
-    my_tickets    # Lists active tickets assigned to 'me'
-    my_report     # Lists custom report's tickets
-    commands, h   # Show this message
+    change_space              # Changes current space
+    change_report             # Changes current default report
+    tickets                   # Lists tickets for current space
+    my_tickets                # Lists active tickets assigned to 'me'
+    my_report                 # Lists custom report's tickets
+    statuses                  # Lists available statuses
+    comment('message')        # Add a comment to current ticket
+    comment('message',id)     # Add a comment to the specified ticket id
+    update_status('New')      # Change the status to current ticket
+    update_status('New', id)  # Update the status to the specified ticket
+    fixed                     # Close current ticket as fixed
+    fixed(id)                 # Close specified ticket as fixed
+    invalid                   # Close current ticket as invalid
+    invalid(id)               # Close specified ticket as invalid
+    test                      # Set current ticket status to test
+    test(id)                  # Set specified ticket status to test
+    commands, h               # Show this message
 
   eos
 end
