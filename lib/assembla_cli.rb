@@ -5,6 +5,7 @@ require 'hashie'
 require 'httparty'
 require 'isna'
 require 'yaml'
+require 'highline/import'
 require "assembla_cli/version"
 
 module Assembla
@@ -18,6 +19,12 @@ module Assembla
 
   def self.xml_headers
    {:headers => {'Accept' => 'application/xml', 'Content-Type' => 'application/xml'}}
+  end
+
+  def self.setup_credentials
+    login_name = ask('Username:')
+    password   = ask('Password:') { |prompt| prompt.echo = false }
+    [ login_name, password ]
   end
 
   def self.login (login_name, password)

@@ -7,7 +7,16 @@ extend Hirb::Console
 
 # TODO: Prompt for credentials and create this file if not exists
 # TODO: Move authentication to another class or module
-username, password = File.read("#{ENV['HOME']}/.assembla_cli").split
+__assembla_rc = "#{ENV['HOME']}/.assembla_cli"
+
+unless File.exists?(__assembla_rc)
+  puts "No configuration file found. Please input credentials."
+  File.open(__assembla_rc, 'w') do |file|
+    file.puts Assembla.setup_credentials
+  end
+end
+
+username, password = File.read(__assembla_rc).split
 
 @cfg = {
   'username' => username,
