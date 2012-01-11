@@ -63,6 +63,15 @@ def milestone_string number
   'Unknown'
 end
 
+def ticket_change_comment_string comment
+  c = YAML::load(comment).flatten
+  if c.count == 3
+    "#{c[0]} changed from: #{c[1]} to: #{c[2]}"
+  else
+    "Change: #{c.to_s}"
+  end
+end
+
 def reports
   all_reports = Assembla.custom_reports['custom_reports']
   table all_reports['user_reports'] + all_reports['team_reports'], :fields => ['id', 'name']
@@ -139,23 +148,31 @@ def print_ticket
   hash[4] = {:col1 => 'assigned to', :col2 => ticket['assigned_to']['name'], :col3 => ''}
   hash[5] = {:col1 => 'reported by', :col2 => ticket['reporter']['name'], :col3 => ''}
   hash[6] = {:col1 => 'status', :col2 => ticket['status_name'], :col3 => ''}
-  hash[7] = {:col1 => 'Comment and Changes', :col2 => ''}
 
-  ticket['ticket_comments'].each do |comments|  	  	
-    if comments['comment'].nil?
-      hash << {:col1 => 'ticket changed', :col2 => comments['ticket_changes'], :col3 => comments['updated_at']}
-    else
-      hash << {:col1 => 'comment', :col2 => comments['comment'], :col3 => comments['updated_at']}
-    end
-  end	
   table = Hirb::Helpers::AutoTable.render(hash, :headers => false) 	
   c = @cfg['zebra_colors']['color1']
   i = 0;
 
   table.each_line do |line|  	  	
-    c = (i == 8 || i == 1) ? @cfg['zebra_colors']['color2'] : @cfg['zebra_colors']['color1']
+    c = (i == 1) ? @cfg['zebra_colors']['color2'] : @cfg['zebra_colors']['color1']
     puts line.chomp.to_ansi.white.send(c)
     i = i + 1
+  end
+  puts '-' * Hirb::View.width
+  puts "Ticket changes:"
+  puts '-' * Hirb::View.width
+  ticket['ticket_comments'].map do |comment|
+    if comment['comment'].nil? && !comment['ticket_changes'].nil?
+      puts "Ticket change:"
+      puts ticket_change_comment_string(comment['ticket_changes'])
+      puts "Date:#{comment['updated_at']}:"
+      puts '-' * Hirb::View.width
+    else !comment['comment'].nil?
+      puts "#{comment['user']['name']} comment:"
+      puts comment['comment']
+      puts "Date:#{comment['updated_at']}:"
+      puts '-' * Hirb::View.width
+    end
   end
 end
 
@@ -173,22 +190,7 @@ def ticket (id = nil)
     Assembla.ticket id
     print_ticket
   elsif Assembla.ticket
-    t = Assembla.ticket['ticket']
-   # td = [{
-   #   'number' => t['number'],
-   #   'summary' => t['summary']
-   # }]
-   # table(td, :description => false)
-    
-    print_tickets [Assembla.ticket['ticket']]
-
-    puts '-' * Hirb::View.width
-    cd = t['ticket_comments'].map do |c|
-      next unless c['comment']
-      puts "#{c['user']['name']}:"
-      puts c['comment']
-      puts '-' * Hirb::View.width
-    end
+    print_ticket
   else
     puts 'Please select a ticket to display'
   end
@@ -200,10 +202,10 @@ def comment (comment, id = nil)
   elsif id
     Assembla.ticket id
     Assembla.add_comment(comment)
-    print_ticket
+    ticket(id)
   else
     Assembla.add_comment(comment)
-    print_ticket
+    ticket(Assembla.ticket['ticket']['number'])
   end 
 end
 
@@ -213,10 +215,10 @@ def update_status (status, id = nil)
   elsif id
     Assembla.ticket id
     Assembla.change_status(status)
-    print_ticket
+    ticket(id)
   else
     Assembla.change_status(status)
-    print_ticket
+    ticket(Assembla.ticket['ticket']['number'])
   end 
 end
 

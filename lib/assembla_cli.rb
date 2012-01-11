@@ -4,6 +4,7 @@ require 'hirb'
 require 'hashie'
 require 'httparty'
 require 'isna'
+require 'yaml'
 require "assembla_cli/version"
 
 module Assembla
